@@ -2,6 +2,8 @@ module github.com/spudtrooper/spotifyconvert
 
 go 1.18
 
+replace github.com/spudtrooper/spotifydown => ../spotifydown
+
 replace github.com/spudtrooper/goutil => ../goutil
 
 require (

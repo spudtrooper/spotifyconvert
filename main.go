@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"path"
 	"regexp"
 
 	"github.com/pkg/errors"
 	"github.com/spudtrooper/goutil/check"
+	goutillog "github.com/spudtrooper/goutil/log"
 	"github.com/spudtrooper/goutil/net"
 	"github.com/spudtrooper/spotifydown/api"
 )
@@ -36,9 +36,8 @@ func realMain() error {
 		track = m[1]
 	}
 
-	log.Printf("track: %s", track)
-
-	c := api.NewClient()
+	logger := goutillog.MakeLog("spotifyconvert", goutillog.MakeLogColor(true))
+	c := api.NewClient(api.NewClientLogger(logger))
 	convert, err := c.Convert(api.ConvertTrack(track), api.ConvertVerbose(*verbose))
 	if err != nil {
 		return err
@@ -52,7 +51,7 @@ func realMain() error {
 	outFile := path.Join(dir, fmt.Sprintf("%s.mp3", track))
 
 	if *verbose {
-		log.Printf("downloading %s -> %s", uri, outFile)
+		logger.Printf("downloading %s -> %s", uri, outFile)
 	}
 
 	if err := net.DownloadFile(outFile, uri); err != nil {
@@ -60,7 +59,7 @@ func realMain() error {
 	}
 
 	if *verbose {
-		log.Printf("downloaded %s -> %s", uri, outFile)
+		logger.Printf("downloaded %s -> %s", uri, outFile)
 	}
 
 	return nil
